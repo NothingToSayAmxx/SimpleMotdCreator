@@ -1,0 +1,9 @@
+@use './variables' as *;
+
+@mixin corner-mark($color: $orange) {
+  &::before, &::after { content: ''; position: absolute; width: 9px; height: 9px; pointer-events: none; }
+  &::before { left: -1px; top: -1px; border-left: 1px solid $color; border-top: 1px solid $color; }
+  &::after { right: -1px; bottom: -1px; border-right: 1px solid $color; border-bottom: 1px solid $color; }
+}
+
+@mixin focus-ring { &:focus-visible { outline: 1px solid $orange; outline-offset: 2px; } }

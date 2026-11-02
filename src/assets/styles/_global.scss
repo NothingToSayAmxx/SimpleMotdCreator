@@ -1,0 +1,10 @@
+@use './variables' as *;
+
+*, *::before, *::after { box-sizing: border-box; }
+html { min-width: 320px; background: $bg; }
+body { margin: 0; background: $bg; color: $text; font-family: Inter, 'Segoe UI', sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; }
+button, input, textarea { font: inherit; }
+button { color: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 1px solid $orange; outline-offset: 2px; }
+::selection { background: rgba(233, 130, 43, .32); color: white; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
