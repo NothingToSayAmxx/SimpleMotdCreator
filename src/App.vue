@@ -10,7 +10,7 @@ import { loadSettings, saveSettings, clearSettings } from './utils/storage.js'
 import { generateHtml, MAX_MOTD_LENGTH } from './utils/generateHtml.js'
 import { CLOUDINARY_DEFAULTS } from './services/cloudinary.js'
 
-const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', knifeId: '0', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
+const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', knifeId: '0', rating: 10, price: 'Секретные ножи не продаются', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
 const settings = ref(defaults())
 const cloudinary = ref({ ...CLOUDINARY_DEFAULTS })
 const toast = ref(null)
