@@ -10,7 +10,7 @@ import { loadSettings, saveSettings, clearSettings } from './utils/storage.js'
 import { generateHtml, MAX_MOTD_LENGTH } from './utils/generateHtml.js'
 import { CLOUDINARY_DEFAULTS } from './services/cloudinary.js'
 
-const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', knifeId: '0', rating: 10, price: 'Секретные ножи не продаются', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
+const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', rating: 10, price: 'Секретные ножи не продаются', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
 const settings = ref(defaults())
 const cloudinary = ref({ ...CLOUDINARY_DEFAULTS })
 const toast = ref(null)
@@ -21,13 +21,19 @@ onMounted(() => {
   if (!saved) return
   const base = defaults()
   const savedAbilities = new Map((Array.isArray(saved.abilities) ? saved.abilities : []).map((item) => [item.id, item]))
+  const oldKnifeId = String(saved.knifeId || '0')
   const abilities = abilityDefaults.map((current) => {
     const previous = savedAbilities.get(current.id)
-    return previous?.configs ? { ...current, configs: { ...current.configs, ...previous.configs } } : current
+    if (!previous) return current
+    if (previous.configs) {
+      const oldConfig = previous.configs[oldKnifeId]
+      return oldConfig ? { ...current, ...oldConfig } : current
+    }
+    return { ...current, enabled: previous.enabled ?? current.enabled, knifeOnly: previous.knifeOnly ?? previous.always ?? current.knifeOnly, value: previous.value ?? current.value }
   })
   const description = saved.description === 'Легендарний клинок для справжніх мисливців. Стиль, точність і холодна сталь — усе в одному.' ? base.description : saved.description
-  const knifeId = ['0', '1', '2', '3'].includes(String(saved.knifeId)) ? String(saved.knifeId) : '0'
-  settings.value = { ...base, ...saved, description, knifeId, abilities }
+  const { knifeId: _legacyKnifeId, ...savedSettings } = saved
+  settings.value = { ...base, ...savedSettings, description, abilities }
   const storedPreset = String(saved.uploadPreset || '').trim()
   const storedCloudName = String(saved.cloudName || '').trim()
   cloudinary.value = {
@@ -42,6 +48,9 @@ watch([settings, cloudinary], () => {
     if (!ok) notify({ type: 'error', message: 'Не удалось сохранить настройки. Проверьте доступность LocalStorage.' })
   }, 250)
 }, { deep: true })
+watch(() => settings.value.template, () => {
+  saveSettings({ ...settings.value, cloudName: cloudinary.value.cloudName, uploadPreset: cloudinary.value.uploadPreset })
+}, { flush: 'sync' })
 onUnmounted(() => clearTimeout(saveTimer))
 function notify(message) { toast.value = { ...message, id: Date.now() + Math.random() } }
 function dismiss(id) { if (toast.value?.id === id) toast.value = null }
