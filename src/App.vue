@@ -9,7 +9,7 @@ import { abilities as abilityDefaults } from './data/abilities.js'
 import { loadSettings, saveSettings, clearSettings } from './utils/storage.js'
 import { generateHtml, MAX_MOTD_LENGTH } from './utils/generateHtml.js'
 
-const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
+const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', knifeId: '0', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
 const settings = ref(defaults())
 const cloudinary = ref({ cloudName: '', uploadPreset: '' })
 const toast = ref(null)
@@ -19,13 +19,14 @@ onMounted(() => {
   const saved = loadSettings()
   if (!saved) return
   const base = defaults()
-  const oldExampleNames = { damage: 'Підсилена шкода', speed: 'Швидкість', precision: 'Точність', bonus: 'Бонус раунду' }
-  const abilities = Array.isArray(saved.abilities) ? saved.abilities.map((item) => {
-    const current = abilityDefaults.find((ability) => ability.id === item.id)
-    return current && item.name === oldExampleNames[item.id] ? { ...current, enabled: item.enabled } : item
-  }) : base.abilities
+  const savedAbilities = new Map((Array.isArray(saved.abilities) ? saved.abilities : []).map((item) => [item.id, item]))
+  const abilities = abilityDefaults.map((current) => {
+    const previous = savedAbilities.get(current.id)
+    return previous?.configs ? { ...current, configs: { ...current.configs, ...previous.configs } } : current
+  })
   const description = saved.description === 'Легендарний клинок для справжніх мисливців. Стиль, точність і холодна сталь — усе в одному.' ? base.description : saved.description
-  settings.value = { ...base, ...saved, description, abilities }
+  const knifeId = ['0', '1', '2', '3'].includes(String(saved.knifeId)) ? String(saved.knifeId) : '0'
+  settings.value = { ...base, ...saved, description, knifeId, abilities }
   cloudinary.value = { cloudName: saved.cloudName || '', uploadPreset: saved.uploadPreset || '' }
 })
 watch([settings, cloudinary], () => {
@@ -53,7 +54,7 @@ function reset() {
   <div class="app-shell">
     <AppHeader @reset="reset" @export="exportHtml" />
     <main class="workspace">
-      <div class="page-intro"><div><div class="eyebrow"><span></span> GOLDSRC TOOLKIT / НАСТРОЙКА</div><h1>Создай свой <em>MOTD.</em></h1><p>Создай приветственное окно для своего сервера Counter-Strike 1.6.</p></div><div class="intro-stamp"><Crosshair :size="18" /><span>АРСЕНАЛ<br />СЕРВЕРА</span><small>ЛОКАЛЬНАЯ ВЕРСИЯ</small></div></div>
+      <div class="page-intro"><div><div class="eyebrow"><span></span> GOLDSRC TOOLKIT / НАСТРОЙКА</div><h1>Создай свой <em>MOTD.</em></h1><p>Создай приветственное окно для своего сервера Counter-Strike 1.6.</p></div></div>
       <div class="workspace-grid"><KnifeEditor v-model="settings" v-model:cloudinary="cloudinary" @notify="notify" /><div class="preview-column"><MotdPreview :settings="settings" @notify="notify" /><div class="limit-note" :class="{ warning: html.length > settings.maxLength }"><AlertTriangle v-if="html.length > settings.maxLength" :size="15" /><Cpu v-else :size="15" /><span v-if="html.length > settings.maxLength">HTML превышает лимит CS 1.6: {{ html.length }} / {{ settings.maxLength }} символов. Проверьте вкладку «HTML-код».</span><span v-else>Рекомендуемый лимит MOTD — {{ settings.maxLength }} символов. <b>{{ html.length }} / {{ settings.maxLength }}</b></span></div></div></div>
       <footer class="app-footer"><span>CS 1.6 MOTD BUILDER <i>·</i> ДЛЯ АДМИНИСТРАТОРОВ СЕРВЕРОВ</span><span>СЕРВЕР НЕ ТРЕБУЕТСЯ <i>·</i> v1.0.0</span></footer>
     </main>
