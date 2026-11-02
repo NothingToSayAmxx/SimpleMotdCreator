@@ -9,7 +9,7 @@ import { abilities as abilityDefaults } from './data/abilities.js'
 import { loadSettings, saveSettings, clearSettings } from './utils/storage.js'
 import { generateHtml, MAX_MOTD_LENGTH } from './utils/generateHtml.js'
 
-const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
+const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
 const settings = ref(defaults())
 const cloudinary = ref({ cloudName: '', uploadPreset: '' })
 const toast = ref(null)
