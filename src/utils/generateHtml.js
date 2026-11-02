@@ -39,14 +39,14 @@ function generateTable({ title, image, imageUrl, abilities, rating, price, style
   return `<!doctype html><meta charset=utf-8>${stylesheet}<body class=table><table><tr><th colspan=4>Изображение ножа<tr><td class=pic colspan=4>${picture}</tr><tr><th colspan=4>Информация<tr><td>Название<td colspan=3>${title}<tr><td>Рейтинг<td colspan=3 class=stars>${stars}<tr><td>Цена<td colspan=3>${price}<tr><th>Способности<th>Наличие<th>С ножом<th>Доп. знач.</tr>${abilityRows}</table></body>`
 }
 
-export function generateHtml(settings) {
+export function generateHtml(settings, { stylesheetUrl = MOTD_STYLESHEET_URL } = {}) {
   const title = escapeHtml(settings.name || 'Нож без названия')
   const description = escapeHtml(settings.description || 'Добавьте краткое описание ножа.')
   const rating = Math.max(0, Math.min(10, Number(settings.rating ?? 10) || 0))
   const price = escapeHtml(settings.price ?? 'Секретные ножи не продаются')
   const imageUrl = safeImageUrl(settings.imageUrl || '')
   const image = makeImage(imageUrl, title)
-  const stylesheet = makeStylesheetLink(MOTD_STYLESHEET_URL)
+  const stylesheet = makeStylesheetLink(stylesheetUrl)
   const abilities = settings.abilities || []
   const data = { title, description, image, imageUrl, abilities, rating, price, stylesheet }
   return settings.template === 'table' ? generateTable(data) : generateClassic(data)
