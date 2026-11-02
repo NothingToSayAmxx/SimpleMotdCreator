@@ -22,15 +22,15 @@ function useUrl() {
   try {
     const parsed = new URL(value)
     if (parsed.protocol !== 'https:') throw new Error()
-    clearLocal(); emit('update:modelValue', parsed.href); error.value = ''; emit('notify', { type: 'success', message: 'Посилання на зображення застосовано.' })
-    } catch { error.value = 'Введіть коректне HTTPS-посилання на зображення.' }
+    clearLocal(); emit('update:modelValue', parsed.href); error.value = ''; emit('notify', { type: 'success', message: 'Ссылка на изображение применена.' })
+  } catch { error.value = 'Введите корректную HTTPS-ссылку на изображение.' }
 }
 async function upload() {
-  if (!file.value) { error.value = 'Спочатку оберіть файл для завантаження.'; return }
+  if (!file.value) { error.value = 'Сначала выберите файл для загрузки.'; return }
   busy.value = true; error.value = ''
   try {
     const url = await uploadToCloudinary(file.value, props.cloudinary)
-    clearLocal(); emit('update:modelValue', url); emit('notify', { type: 'success', message: 'Зображення завантажено в Cloudinary.' })
+    clearLocal(); emit('update:modelValue', url); emit('notify', { type: 'success', message: 'Изображение загружено в Cloudinary.' })
   } catch (issue) { error.value = issue.message }
   finally { busy.value = false }
 }
@@ -42,18 +42,18 @@ onBeforeUnmount(clearLocal)
 <template>
   <div>
     <div class="image-drop" :class="{ dragging }" @dragover.prevent="dragging = true" @dragleave="dragging = false" @drop.prevent="drop">
-      <img v-if="preview" :src="preview" alt="Попередній перегляд ножа" />
-      <div v-else class="image-empty"><ImagePlus :size="25" /><span>Додайте зображення ножа</span><small>JPG · PNG · WEBP / до 3 MB</small></div>
+      <img v-if="preview" :src="preview" alt="Предпросмотр ножа" />
+      <div v-else class="image-empty"><ImagePlus :size="25" /><span>Добавьте изображение ножа</span><small>JPG · PNG · WEBP / до 3 МБ</small></div>
       <div class="image-actions">
-        <button class="button button-small" type="button" @click="fileInput?.click()"><Upload :size="14" /> Обрати файл</button>
-        <button v-if="file" class="button button-small button-accent" type="button" :disabled="busy" @click="upload"><LoaderCircle v-if="busy" class="spin" :size="14" /><Upload v-else :size="14" /> {{ busy ? 'Завантаження…' : 'Завантажити' }}</button>
-        <button v-if="preview" class="icon-button danger" aria-label="Видалити зображення" type="button" @click="remove"><Trash2 :size="15" /></button>
+        <button class="button button-small" type="button" @click="fileInput?.click()"><Upload :size="14" /> Выбрать файл</button>
+        <button v-if="file" class="button button-small button-accent" type="button" :disabled="busy" @click="upload"><LoaderCircle v-if="busy" class="spin" :size="14" /><Upload v-else :size="14" /> {{ busy ? 'Загрузка…' : 'Загрузить' }}</button>
+        <button v-if="preview" class="icon-button danger" aria-label="Удалить изображение" type="button" @click="remove"><Trash2 :size="15" /></button>
       </div>
       <input ref="fileInput" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" @change="choose" />
     </div>
-    <div v-if="file" class="field-hint file-note">Вибрано {{ file.name }}. Підтвердіть кнопкою «Завантажити», щоб отримати HTTPS-посилання.</div>
-    <div class="url-entry"><input v-model="urlInput" type="url" placeholder="https://example.com/knife.jpg" aria-label="URL зображення" @keyup.enter="useUrl" /><button class="button button-small" type="button" @click="useUrl"><Link2 :size="14" /> Застосувати URL</button></div>
-    <p v-if="!cloudinary.cloudName || !cloudinary.uploadPreset" class="field-hint">Cloudinary не налаштовано. Можна використати зовнішній URL.</p>
+    <div v-if="file" class="field-hint file-note">Выбран файл {{ file.name }}. Нажмите «Загрузить», чтобы получить HTTPS-ссылку.</div>
+    <div class="url-entry"><input v-model="urlInput" type="url" placeholder="https://example.com/knife.jpg" aria-label="URL изображения" @keyup.enter="useUrl" /><button class="button button-small" type="button" @click="useUrl"><Link2 :size="14" /> Применить URL</button></div>
+    <p v-if="!cloudinary.cloudName || !cloudinary.uploadPreset" class="field-hint">Cloudinary не настроен. Можно вставить внешнюю HTTPS-ссылку.</p>
     <p v-if="error" class="error-note" role="alert">{{ error }}</p>
   </div>
 </template>

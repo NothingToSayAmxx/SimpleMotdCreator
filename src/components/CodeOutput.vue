@@ -13,8 +13,8 @@ async function copy() {
       const area = document.createElement('textarea'); area.value = props.html; area.style.position = 'fixed'; area.style.opacity = '0'; document.body.append(area); area.select()
       const ok = document.execCommand('copy'); area.remove(); if (!ok) throw new Error('copy failed')
     }
-    copied.value = true; emit('notify', { type: 'success', message: 'HTML скопійовано в буфер обміну.' }); setTimeout(() => copied.value = false, 1800)
-  } catch { emit('notify', { type: 'error', message: 'Не вдалося скопіювати. Виділіть код вручну.' }) }
+    copied.value = true; emit('notify', { type: 'success', message: 'HTML скопирован в буфер обмена.' }); setTimeout(() => copied.value = false, 1800)
+  } catch { emit('notify', { type: 'error', message: 'Не удалось скопировать. Выделите код вручную.' }) }
 }
 function download() {
   const blob = new Blob([props.html], { type: 'text/html;charset=utf-8' }), link = document.createElement('a')
@@ -24,8 +24,8 @@ function download() {
 
 <template>
   <div class="code-output">
-    <div class="code-actions"><div class="length-readout" :class="{ over: length > maxLength }"><span>{{ length.toLocaleString('uk-UA') }}</span><span>/ {{ maxLength.toLocaleString('uk-UA') }} символів</span></div><div class="button-group"><button class="button button-small" type="button" @click="copy"><Check v-if="copied" :size="14" /><Copy v-else :size="14" /> {{ copied ? 'Скопійовано' : 'Копіювати' }}</button><button class="button button-small button-accent" type="button" @click="download"><Download :size="14" /> Завантажити</button></div></div>
-    <div v-if="length > maxLength" class="length-warning" role="alert"><strong>Перевищено ліміт на {{ (length - maxLength).toLocaleString('uk-UA') }} символів.</strong> Скоротіть текст або зображення/розмітку; HTML не обрізається автоматично.</div>
-    <textarea class="code-textarea" :value="html" readonly aria-label="Згенерований HTML MOTD" spellcheck="false"></textarea>
+    <div class="code-actions"><div class="length-readout" :class="{ over: length > maxLength }"><span>{{ length.toLocaleString('ru-RU') }}</span><span>/ {{ maxLength.toLocaleString('ru-RU') }} символов</span></div><div class="button-group"><button class="button button-small" type="button" @click="copy"><Check v-if="copied" :size="14" /><Copy v-else :size="14" /> {{ copied ? 'Скопировано' : 'Скопировать' }}</button><button class="button button-small button-accent" type="button" @click="download"><Download :size="14" /> Скачать</button></div></div>
+    <div v-if="length > maxLength" class="length-warning" role="alert"><strong>Лимит превышен на {{ (length - maxLength).toLocaleString('ru-RU') }} символов.</strong> Сократите текст или разметку. HTML не обрезается автоматически.</div>
+    <textarea class="code-textarea" :value="html" readonly aria-label="Сгенерированный HTML MOTD" spellcheck="false"></textarea>
   </div>
 </template>
