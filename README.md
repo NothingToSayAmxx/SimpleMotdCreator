@@ -27,7 +27,9 @@ npm run dev
 
 Cloud name — это имя облака, указанное в консоли Cloudinary; это не имя пользователя, API key или API secret. Для unsigned preset желательно разрешить только нужные форматы. Название unsigned preset видно в клиентском приложении, поэтому не используйте его для загрузки конфиденциальных файлов. Размер до 3 МБ проверяется приложением перед загрузкой.
 
-Используется Unsigned Upload API. API key и API secret не нужны и не должны добавляться во frontend. Параметры Cloudinary сохраняются в LocalStorage этого браузера. Если загрузка через Cloudinary не нужна, оставьте поля пустыми и вставьте HTTPS-ссылку на изображение вручную.
+Локальные значения по умолчанию задаются в `.env` (образец — `.env.example`). Этот файл игнорируется Git. Переменные `VITE_*` встраиваются в клиентскую сборку, поэтому это публичные настройки, а не место для секретов. Поля Cloudinary в интерфейсе позволяют посетителю указать собственный cloud name и preset; значения сохраняются в LocalStorage этого браузера.
+
+Для GitHub Pages добавьте Actions Variables в **Settings → Secrets and variables → Actions → Variables** с именами `VITE_CLOUDINARY_CLOUD_NAME` и `VITE_CLOUDINARY_UPLOAD_PRESET`. Workflow передаст их в Vite-сборку. Если variables не заданы, посетитель сможет ввести собственные значения в интерфейсе. Используется Unsigned Upload API; API key и API secret не нужны.
 
 ## GitHub Pages
 

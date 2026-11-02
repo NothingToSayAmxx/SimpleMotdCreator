@@ -8,10 +8,11 @@ import ToastNotification from './components/ToastNotification.vue'
 import { abilities as abilityDefaults } from './data/abilities.js'
 import { loadSettings, saveSettings, clearSettings } from './utils/storage.js'
 import { generateHtml, MAX_MOTD_LENGTH } from './utils/generateHtml.js'
+import { CLOUDINARY_DEFAULTS } from './services/cloudinary.js'
 
 const defaults = () => ({ name: 'Shadow Fang', description: 'Легендарный клинок для настоящих охотников. Стиль, точность и холодная сталь — всё в одном.', imageUrl: '', template: 'classic', knifeId: '0', abilities: abilityDefaults.map(item => ({ ...item })), maxLength: MAX_MOTD_LENGTH })
 const settings = ref(defaults())
-const cloudinary = ref({ cloudName: '', uploadPreset: '' })
+const cloudinary = ref({ ...CLOUDINARY_DEFAULTS })
 const toast = ref(null)
 const html = computed(() => generateHtml(settings.value))
 let saveTimer
@@ -27,7 +28,12 @@ onMounted(() => {
   const description = saved.description === 'Легендарний клинок для справжніх мисливців. Стиль, точність і холодна сталь — усе в одному.' ? base.description : saved.description
   const knifeId = ['0', '1', '2', '3'].includes(String(saved.knifeId)) ? String(saved.knifeId) : '0'
   settings.value = { ...base, ...saved, description, knifeId, abilities }
-  cloudinary.value = { cloudName: saved.cloudName || '', uploadPreset: saved.uploadPreset || '' }
+  const storedPreset = String(saved.uploadPreset || '').trim()
+  const storedCloudName = String(saved.cloudName || '').trim()
+  cloudinary.value = {
+    cloudName: storedCloudName && storedCloudName !== storedPreset ? storedCloudName : CLOUDINARY_DEFAULTS.cloudName,
+    uploadPreset: storedPreset || CLOUDINARY_DEFAULTS.uploadPreset,
+  }
 })
 watch([settings, cloudinary], () => {
   clearTimeout(saveTimer)
@@ -45,7 +51,7 @@ function exportHtml() {
   notify({ type: 'success', message: 'Файл motd.html скачан.' })
 }
 function reset() {
-  settings.value = defaults(); cloudinary.value = { cloudName: '', uploadPreset: '' }; clearSettings()
+  settings.value = defaults(); cloudinary.value = { ...CLOUDINARY_DEFAULTS }; clearSettings()
   notify({ type: 'success', message: 'Настройки сброшены.' })
 }
 </script>

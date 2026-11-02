@@ -23,9 +23,11 @@ function generateClassic({ title, description, image, abilities }) {
 
 function generateTable({ title, image, imageUrl, abilities }) {
   // HTML permits omitted td/tr end tags here; this saves characters in the 1536-character MOTD budget.
-  const rows = abilities.map((item) => `<tr><td>${escapeHtml(item.shortName || item.name)}<td>${item.enabled ? '+' : '-'}<td>${item.knifeOnly ? '+' : '-'}<td>${escapeHtml(item.value || '—')}`).join('')
-  const picture = imageUrl ? image : 'Изображение ножа'
-  return `<!doctype html><html><head><meta charset=utf-8><style>body{margin:0;background:#242424;color:#eee;font:10px Arial}table{width:100%;border-collapse:collapse}td,th{padding:2px 3px;background:#292929}th{color:#b5d900;text-align:left}.pic{text-align:center;height:300px;background:#222}.i{width:100%;height:300px}td{text-align:center}</style></head><body><table><tr><td class=pic colspan=4>${picture}</tr><tr><th colspan=4>Информация</tr><tr><td>Название<td colspan=3>${title}<tr><th>Способности<th>Наличие<th>С ножом<th>Доп. знач.</tr>${rows}</table></body></html>`
+  const selected = abilities.filter((item) => item.enabled)
+  const rows = selected.map((item) => `<tr><td>${escapeHtml(item.shortName || item.name)}<td>+<td>${item.knifeOnly ? '+' : '-'}<td>${escapeHtml(item.value || '—')}`).join('')
+  const abilityRows = rows || '<tr><td colspan=4>Способности не выбраны</tr>'
+  const picture = imageUrl ? image : 'Изображение ножа не добавлено'
+  return `<!doctype html><html><head><meta charset=utf-8><style>body{margin:0;background:#242424;color:#eee;font:10px Arial}table{width:100%;border-collapse:collapse}td,th{padding:3px 5px;background:#292929;border-bottom:1px solid #333}th{color:#b5d900;text-align:left}.pic{text-align:center;height:80px;background:#222}.i{width:100%;height:300px}td{text-align:center}td:first-child{text-align:left}.pic:first-child{text-align:center}</style></head><body><table><tr><td class=pic colspan=4>${picture}</tr><tr><th colspan=4>Информация</tr><tr><td>Название<td colspan=3>${title}<tr><th>Способности<th>Наличие<th>С ножом<th>Доп. знач.</tr>${abilityRows}</table></body></html>`
 }
 
 export function generateHtml(settings) {

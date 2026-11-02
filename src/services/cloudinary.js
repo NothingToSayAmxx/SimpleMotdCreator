@@ -1,4 +1,9 @@
 export const IMAGE_MAX_BYTES = 3 * 1024 * 1024
+const viteEnv = import.meta.env || {}
+export const CLOUDINARY_DEFAULTS = {
+  cloudName: viteEnv.VITE_CLOUDINARY_CLOUD_NAME || '',
+  uploadPreset: viteEnv.VITE_CLOUDINARY_UPLOAD_PRESET || '',
+}
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
 
 export function validateImage(file) {
