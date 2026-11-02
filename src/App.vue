@@ -63,7 +63,7 @@ function reset() {
   <div class="app-shell">
     <AppHeader @reset="reset" @export="exportHtml" />
     <main class="workspace">
-      <div class="page-intro"><div><div class="eyebrow"><span></span> GOLDSRC TOOLKIT / НАСТРОЙКА</div><h1>Создай свой <em>MOTD.</em></h1><p>Создай приветственное окно для своего сервера Counter-Strike 1.6.</p></div></div>
+      <div class="page-intro"><div><div class="eyebrow"><span></span> GOLDSRC TOOLKIT / НАСТРОЙКА</div><h1>Создай свой <em>MOTD.</em></h1><p>Создай приветственное окно для плагина ножевой рулетки CS 1.6</p></div></div>
       <div class="workspace-grid"><KnifeEditor v-model="settings" :cloudinary="cloudinary" @notify="notify" /><div class="preview-column"><MotdPreview :settings="settings" @notify="notify" /><div class="limit-note" :class="{ warning: html.length > settings.maxLength }"><AlertTriangle v-if="html.length > settings.maxLength" :size="15" /><Cpu v-else :size="15" /><span v-if="html.length > settings.maxLength">HTML превышает лимит CS 1.6: {{ html.length }} / {{ settings.maxLength }} символов. Проверьте вкладку «HTML-код».</span><span v-else>Рекомендуемый лимит MOTD — {{ settings.maxLength }} символов. <b>{{ html.length }} / {{ settings.maxLength }}</b></span></div></div></div>
       <footer class="app-footer"><span>CS 1.6 MOTD BUILDER <i>·</i> ДЛЯ АДМИНИСТРАТОРОВ СЕРВЕРОВ</span><span>СЕРВЕР НЕ ТРЕБУЕТСЯ <i>·</i> v1.0.0</span></footer>
     </main>

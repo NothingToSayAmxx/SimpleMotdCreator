@@ -28,6 +28,7 @@ jobs:
         env:
           VITE_CLOUDINARY_CLOUD_NAME: ${{ vars.VITE_CLOUDINARY_CLOUD_NAME }}
           VITE_CLOUDINARY_UPLOAD_PRESET: ${{ vars.VITE_CLOUDINARY_UPLOAD_PRESET }}
+          VITE_MOTD_STYLESHEET_URL: ${{ vars.VITE_MOTD_STYLESHEET_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
