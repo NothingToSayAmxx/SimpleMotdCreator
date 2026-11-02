@@ -17,7 +17,7 @@ function makeImage(url, title, className = 'i') {
 
 function generateClassic({ title, description, image, abilities }) {
   const entries = abilities.filter((item) => item.enabled).map((item) => `${escapeHtml(item.shortName || item.name)}:${escapeHtml(item.value || '—')}`)
-  const list = entries.length ? entries.join(' · ') : 'Активных способностей нет'
+  const list = entries.length ? entries.join('<br>') : 'Активных способностей нет'
   return `<!doctype html><meta charset=utf-8><style>body{margin:0;padding:10px;background:#171914;color:#e7e5dc;font:13px Arial}.p{padding:10px;border:1px solid #45483f;background:#20221d}h1{margin:0 0 7px;color:#e82;font-size:18px}p{margin:0;line-height:1.45}.i{display:block;max-width:100%;width:220px;height:130px;object-fit:contain;margin:0 auto 9px}.d{color:#d5d4ca}.s{margin-top:9px;padding-top:7px;border-top:1px solid #45483f;color:#c6c5bc}.c{display:block;margin-bottom:4px;color:#bd0;font-size:10px;font-weight:bold;letter-spacing:.08em}</style><body><div class=p><h1>${title}</h1>${image}<p class=d>${description}</p><div class=s><b class=c>СПОСОБНОСТИ</b>${list}</div></div></body></html>`
 }
 
