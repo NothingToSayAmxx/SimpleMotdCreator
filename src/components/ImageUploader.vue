@@ -53,7 +53,7 @@ onBeforeUnmount(clearLocal)
     </div>
     <div v-if="file" class="field-hint file-note">Выбран файл {{ file.name }}. Нажмите «Загрузить», чтобы получить HTTPS-ссылку.</div>
     <div class="url-entry"><input v-model="urlInput" type="url" placeholder="https://example.com/knife.jpg" aria-label="URL изображения" @keyup.enter="useUrl" /><button class="button button-small" type="button" @click="useUrl"><Link2 :size="14" /> Применить URL</button></div>
-    <p v-if="!cloudinary.cloudName || !cloudinary.uploadPreset" class="field-hint">Cloudinary не настроен. Можно вставить внешнюю HTTPS-ссылку.</p>
+    <p v-if="!cloudinary.cloudName || !cloudinary.uploadPreset" class="field-hint">Cloudinary не настроен в сборке. Можно вставить внешнюю HTTPS-ссылку.</p>
     <p v-if="error" class="error-note" role="alert">{{ error }}</p>
   </div>
 </template>

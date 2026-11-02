@@ -32,24 +32,18 @@ onMounted(() => {
     return { ...current, enabled: previous.enabled ?? current.enabled, knifeOnly: previous.knifeOnly ?? previous.always ?? current.knifeOnly, value: previous.value ?? current.value }
   })
   const description = saved.description === 'Легендарний клинок для справжніх мисливців. Стиль, точність і холодна сталь — усе в одному.' ? base.description : saved.description
-  const { knifeId: _legacyKnifeId, ...savedSettings } = saved
+  const { knifeId: _legacyKnifeId, cloudName: _oldCloudName, uploadPreset: _oldUploadPreset, ...savedSettings } = saved
   settings.value = { ...base, ...savedSettings, description, abilities }
-  const storedPreset = String(saved.uploadPreset || '').trim()
-  const storedCloudName = String(saved.cloudName || '').trim()
-  cloudinary.value = {
-    cloudName: storedCloudName && storedCloudName !== storedPreset ? storedCloudName : CLOUDINARY_DEFAULTS.cloudName,
-    uploadPreset: storedPreset || CLOUDINARY_DEFAULTS.uploadPreset,
-  }
 })
-watch([settings, cloudinary], () => {
+watch(settings, () => {
   clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
-    const ok = saveSettings({ ...settings.value, cloudName: cloudinary.value.cloudName, uploadPreset: cloudinary.value.uploadPreset })
+    const ok = saveSettings(settings.value)
     if (!ok) notify({ type: 'error', message: 'Не удалось сохранить настройки. Проверьте доступность LocalStorage.' })
   }, 250)
 }, { deep: true })
 watch(() => settings.value.template, () => {
-  saveSettings({ ...settings.value, cloudName: cloudinary.value.cloudName, uploadPreset: cloudinary.value.uploadPreset })
+  saveSettings(settings.value)
 }, { flush: 'sync' })
 onUnmounted(() => clearTimeout(saveTimer))
 function notify(message) { toast.value = { ...message, id: Date.now() + Math.random() } }
@@ -70,7 +64,7 @@ function reset() {
     <AppHeader @reset="reset" @export="exportHtml" />
     <main class="workspace">
       <div class="page-intro"><div><div class="eyebrow"><span></span> GOLDSRC TOOLKIT / НАСТРОЙКА</div><h1>Создай свой <em>MOTD.</em></h1><p>Создай приветственное окно для своего сервера Counter-Strike 1.6.</p></div></div>
-      <div class="workspace-grid"><KnifeEditor v-model="settings" v-model:cloudinary="cloudinary" @notify="notify" /><div class="preview-column"><MotdPreview :settings="settings" @notify="notify" /><div class="limit-note" :class="{ warning: html.length > settings.maxLength }"><AlertTriangle v-if="html.length > settings.maxLength" :size="15" /><Cpu v-else :size="15" /><span v-if="html.length > settings.maxLength">HTML превышает лимит CS 1.6: {{ html.length }} / {{ settings.maxLength }} символов. Проверьте вкладку «HTML-код».</span><span v-else>Рекомендуемый лимит MOTD — {{ settings.maxLength }} символов. <b>{{ html.length }} / {{ settings.maxLength }}</b></span></div></div></div>
+      <div class="workspace-grid"><KnifeEditor v-model="settings" :cloudinary="cloudinary" @notify="notify" /><div class="preview-column"><MotdPreview :settings="settings" @notify="notify" /><div class="limit-note" :class="{ warning: html.length > settings.maxLength }"><AlertTriangle v-if="html.length > settings.maxLength" :size="15" /><Cpu v-else :size="15" /><span v-if="html.length > settings.maxLength">HTML превышает лимит CS 1.6: {{ html.length }} / {{ settings.maxLength }} символов. Проверьте вкладку «HTML-код».</span><span v-else>Рекомендуемый лимит MOTD — {{ settings.maxLength }} символов. <b>{{ html.length }} / {{ settings.maxLength }}</b></span></div></div></div>
       <footer class="app-footer"><span>CS 1.6 MOTD BUILDER <i>·</i> ДЛЯ АДМИНИСТРАТОРОВ СЕРВЕРОВ</span><span>СЕРВЕР НЕ ТРЕБУЕТСЯ <i>·</i> v1.0.0</span></footer>
     </main>
     <ToastNotification :toast="toast" @dismiss="dismiss" />

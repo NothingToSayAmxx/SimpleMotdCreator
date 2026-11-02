@@ -14,7 +14,7 @@ export function validateImage(file) {
 
 export async function uploadToCloudinary(file, { cloudName, uploadPreset }) {
   validateImage(file)
-  if (!cloudName?.trim() || !uploadPreset?.trim()) throw new Error('Сначала укажите Cloud name и Upload preset в настройках.')
+  if (!cloudName?.trim() || !uploadPreset?.trim()) throw new Error('Cloudinary не настроен: задайте VITE_CLOUDINARY_CLOUD_NAME и VITE_CLOUDINARY_UPLOAD_PRESET в .env и пересоберите проект.')
   const body = new FormData()
   body.append('file', file)
   body.append('upload_preset', uploadPreset.trim())
